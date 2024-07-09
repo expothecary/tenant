@@ -47,7 +47,7 @@ defmodule Triplex.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:credo, "~> 0.8.10", only: [:test, :dev], optional: true, runtime: false},
+      {:credo, "~> 1.0", only: [:test, :dev], optional: true, runtime: false},
       {:ecto_sql, "~> 3.0"},
       {:ex_doc, "~> 0.18.0", only: :dev},
       {:excoveralls, "~> 0.0", only: :test},
