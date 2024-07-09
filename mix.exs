@@ -50,7 +50,7 @@ defmodule Triplex.Mixfile do
       {:credo, "~> 0.8.10", only: [:test, :dev], optional: true, runtime: false},
       {:ecto_sql, "~> 3.4"},
       {:ex_doc, "~> 0.18.0", only: :dev},
-      {:excoveralls, "~> 0.10", only: :test},
+      {:excoveralls, "~> 0.0", only: :test},
       {:inch_ex, ">= 0.0.0", only: :docs},
       {:plug, "~> 1.6", optional: true},
       {:postgrex, ">= 0.15.0", optional: true},
