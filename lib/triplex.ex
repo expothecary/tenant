@@ -75,7 +75,7 @@ defmodule Triplex do
 
   defp do_reserved_tenant?(prefix) do
     Enum.any?(reserved_tenants(), fn i ->
-      if is_bitstring(prefix) and Regex.regex?(i) do
+      if is_bitstring(prefix) and is_struct(i, Regex) do
         Regex.match?(i, prefix)
       else
         i == prefix
@@ -151,7 +151,7 @@ defmodule Triplex do
       {:error, reserved_message(tenant)}
     else
       sql =
-        case repo.__adapter__ do
+        case repo.__adapter__() do
           Ecto.Adapters.MyXQL -> "CREATE DATABASE `#{to_prefix(tenant)}`"
           Ecto.Adapters.Postgres -> "CREATE SCHEMA \"#{to_prefix(tenant)}\""
         end
@@ -174,7 +174,7 @@ defmodule Triplex do
   end
 
   defp error_message(msg) do
-    if Exception.exception?(msg) do
+    if is_exception(msg) do
       Exception.message(msg)
     else
       msg
@@ -182,7 +182,7 @@ defmodule Triplex do
   end
 
   defp add_to_tenants_table(tenant, repo) do
-    case repo.__adapter__ do
+    case repo.__adapter__() do
       Ecto.Adapters.MyXQL ->
         if Triplex.config().tenant_table == :"information_schema.schemata" do
           {:ok, :skipped}
@@ -197,7 +197,7 @@ defmodule Triplex do
   end
 
   defp remove_from_tenants_table(tenant, repo) do
-    case repo.__adapter__ do
+    case repo.__adapter__() do
       Ecto.Adapters.MyXQL ->
         if Triplex.config().tenant_table == :"information_schema.schemata" do
           {:ok, :skipped}
@@ -233,7 +233,7 @@ defmodule Triplex do
       {:error, reserved_message(tenant)}
     else
       sql =
-        case repo.__adapter__ do
+        case repo.__adapter__() do
           Ecto.Adapters.MyXQL -> "DROP DATABASE `#{to_prefix(tenant)}`"
           Ecto.Adapters.Postgres -> "DROP SCHEMA \"#{to_prefix(tenant)}\" CASCADE"
         end
@@ -260,7 +260,7 @@ defmodule Triplex do
     if reserved_tenant?(new_tenant) do
       {:error, reserved_message(new_tenant)}
     else
-      case repo.__adapter__ do
+      case repo.__adapter__() do
         Ecto.Adapters.MyXQL ->
           {:error, "you cannot rename tenants in a MySQL database."}
 
@@ -286,7 +286,7 @@ defmodule Triplex do
   """
   def all(repo \\ config().repo) do
     sql =
-      case repo.__adapter__ do
+      case repo.__adapter__() do
         Ecto.Adapters.MyXQL ->
           column_name =
             if Triplex.config().tenant_table == :"information_schema.schemata",
@@ -319,7 +319,7 @@ defmodule Triplex do
       false
     else
       sql =
-        case repo.__adapter__ do
+        case repo.__adapter__() do
           Ecto.Adapters.MyXQL ->
             "SELECT COUNT(*) FROM `#{config().tenant_table}` WHERE name = ?"
 

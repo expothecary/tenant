@@ -109,7 +109,7 @@ defmodule TriplexTest do
 
   test "exists?/2 for a reserved tenants returns false" do
     for repo <- @repos do
-      tenants = Enum.filter(Triplex.reserved_tenants(), &(!Regex.regex?(&1)))
+      tenants = Enum.filter(Triplex.reserved_tenants(), &(!is_struct(&1, Regex)))
       tenants = ["pg_lol", "pg_cow" | tenants]
 
       for tenant <- tenants do
@@ -206,7 +206,7 @@ defmodule TriplexTest do
 
   defp force_migration_failure(repo, migration_function) do
     sql =
-      case repo.__adapter__ do
+      case repo.__adapter__() do
         Ecto.Adapters.MyXQL ->
           """
           DELETE FROM #{@tenant}.schema_migrations
@@ -220,7 +220,7 @@ defmodule TriplexTest do
 
     {:ok, _} = Ecto.Adapters.SQL.query(repo, sql, [])
 
-    if repo.__adapter__ == Ecto.Adapters.MyXQL do
+    if repo.__adapter__() == Ecto.Adapters.MyXQL do
       migration_function.("(1050) (ER_TABLE_EXISTS_ERROR) Table 'notes' already exists")
     else
       migration_function.("ERROR 42P07 (duplicate_table) relation \"notes\" already exists")
