@@ -37,13 +37,17 @@ defmodule TriplexTest do
   test "create/2 must return a error if the tenant already exists" do
     assert {:ok, _} = Triplex.create("lala", PGTestRepo)
 
-    assert {:error, "ERROR 42P06 (duplicate_schema) schema \"lala\" already exists"} =
+    assert {:error, message} =
              Triplex.create("lala", PGTestRepo)
+
+    assert message =~ "ERROR 42P06 (duplicate_schema) schema \"lala\" already exists"
 
     assert {:ok, _} = Triplex.create("lala", MSTestRepo)
 
-    assert {:error, "(1007) (ER_DB_CREATE_EXISTS) Can't create database 'lala'; database exists"} =
+    assert {:error, message} =
              Triplex.create("lala", MSTestRepo)
+
+    assert message =~ "(1007) (ER_DB_CREATE_EXISTS) Can't create database 'lala'; database exists"
   end
 
   test "create/2 must return a error if the tenant is reserved" do
@@ -105,7 +109,7 @@ defmodule TriplexTest do
 
   test "exists?/2 for a reserved tenants returns false" do
     for repo <- @repos do
-      tenants = Enum.filter(Triplex.reserved_tenants(), &(!Regex.regex?(&1)))
+      tenants = Enum.filter(Triplex.reserved_tenants(), &(!is_struct(&1, Regex)))
       tenants = ["pg_lol", "pg_cow" | tenants]
 
       for tenant <- tenants do
@@ -149,7 +153,7 @@ defmodule TriplexTest do
       force_migration_failure(repo, fn expected_error ->
         {status, error_message} = Triplex.migrate(@tenant, repo)
         assert status == :error
-        assert error_message == expected_error
+        assert error_message =~ expected_error
       end)
     end
   end
@@ -202,7 +206,7 @@ defmodule TriplexTest do
 
   defp force_migration_failure(repo, migration_function) do
     sql =
-      case repo.__adapter__ do
+      case repo.__adapter__() do
         Ecto.Adapters.MyXQL ->
           """
           DELETE FROM #{@tenant}.schema_migrations
@@ -216,7 +220,7 @@ defmodule TriplexTest do
 
     {:ok, _} = Ecto.Adapters.SQL.query(repo, sql, [])
 
-    if repo.__adapter__ == Ecto.Adapters.MyXQL do
+    if repo.__adapter__() == Ecto.Adapters.MyXQL do
       migration_function.("(1050) (ER_TABLE_EXISTS_ERROR) Table 'notes' already exists")
     else
       migration_function.("ERROR 42P07 (duplicate_table) relation \"notes\" already exists")

@@ -32,11 +32,11 @@ defmodule Triplex.Mixfile do
 
   defp deps do
     [
-      {:credo, "~> 0.8.10", only: [:test, :dev], optional: true, runtime: false},
+      {:credo, "~> 1.0", only: [:test, :dev], optional: true, runtime: false},
       {:decimal, ">= 1.6.0"},
-      {:ecto_sql, "~> 3.4"},
+      {:ecto_sql, "~> 3.0"},
       {:ex_doc, ">= 0.0.0", only: :docs, runtime: false},
-      {:excoveralls, "~> 0.10", only: :test},
+      {:excoveralls, "~> 0.0", only: :test},
       {:inch_ex, ">= 0.0.0", only: :docs, runtime: false},
       {:myxql, ">= 0.3.0", optional: true},
       {:plug, "~> 1.6", optional: true},

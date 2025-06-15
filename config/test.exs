@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 # Configure triplex
 config :triplex,
@@ -33,4 +33,4 @@ config :triplex, Triplex.MSTestRepo,
   database: "triplex_test",
   pool: Ecto.Adapters.SQL.Sandbox
 
-config :logger, level: :warn
+config :logger, level: :warning
