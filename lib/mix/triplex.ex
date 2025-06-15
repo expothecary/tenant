@@ -194,4 +194,6 @@ defmodule Mix.Triplex do
   after
     Logger.add_backend(:console, flush: true)
   end
+
+  defp pad(i), do: i |> to_string() |> String.pad_leading(2, "0")
 end

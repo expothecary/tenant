@@ -75,8 +75,6 @@ defmodule Mix.Tasks.Triplex.Gen.Migration do
     end)
   end
 
-  defp pad(i), do: i |> to_string() |> String.pad_leading(2, "0")
-
   Generator.embed_template(:migration, """
   defmodule <%= inspect @mod %> do
     use Ecto.Migration

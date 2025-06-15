@@ -45,8 +45,6 @@ defmodule Mix.Tasks.Triplex.Mysql.Install do
     end)
   end
 
-  defp pad(i), do: i |> to_string() |> String.pad_leading(2, "0")
-
   Generator.embed_template(:migration, """
   defmodule <%= Module.concat([@repo, Migrations, Macro.camelize(@migration_name)]) %> do
     use Ecto.Migration
