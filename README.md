@@ -42,6 +42,16 @@ Configure the Repo you will use to execute the database commands with:
 
     config :triplex, repo: ExampleApp.Repo
 
+## Testing
+
+The unit tests run, by default, against both PostgreSQL and MySQL. It is possible to run the tests
+against only one or the other by setting the `TRIPLEX_TEST_BACKENDS` environment variable to a
+comma-separated list. The recognized values are `pgsql` and `mysql`.
+
+This command would run only the PostgreSQL tests:
+
+    TRIPLEX_TEST_BACKENDS="pgsql" mix test
+
 ### Additional configuration for MySQL
 
 In MySQL, each tenant will have its own MySQL database.
