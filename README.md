@@ -60,15 +60,11 @@ mix ecto.migrate
 
 Finally, configure Triplex to use the `tenants` table:
 
-<<<<<<< HEAD
-    config :triplex, tenant_table: :tenants
-
-Otherwise, Triplex will continue to use the `information_schema.schemata` table as the default behavior for storing tenants.
-=======
 ```elixir
 config :triplex, tenant_table: :"information_schema.schemata"
 ```
->>>>>>> kianmeng/misc-doc-changes
+
+Otherwise, Triplex will continue to use the `information_schema.schemata` table as the default behavior for storing tenants.
 
 ## Usage
 
