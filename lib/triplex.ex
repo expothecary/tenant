@@ -188,7 +188,7 @@ defmodule Triplex do
           {:ok, :skipped}
         else
           sql = "INSERT INTO #{Triplex.config().tenant_table} (name) VALUES (?)"
-          SQL.query(repo, sql, [tenant])
+          SQL.query(repo, sql, [to_prefix(tenant)])
         end
 
       Ecto.Adapters.Postgres ->
@@ -239,7 +239,7 @@ defmodule Triplex do
         end
 
       with {:ok, _} <- SQL.query(repo, sql, []),
-           {:ok, _} <- remove_from_tenants_table(tenant, repo) do
+           {:ok, _} <- remove_from_tenants_table(to_prefix(tenant), repo) do
         {:ok, tenant}
       else
         {:error, exception} ->
@@ -307,6 +307,12 @@ defmodule Triplex do
     result
     |> List.flatten()
     |> Enum.filter(&(!reserved_tenant?(&1)))
+    |> Enum.map(fn tenant_name ->
+      case config().tenant_prefix do
+        nil -> tenant_name
+        _ -> String.replace_prefix(tenant_name, config().tenant_prefix, "")
+      end
+    end)
   end
 
   @doc """

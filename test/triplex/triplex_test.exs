@@ -36,13 +36,18 @@ defmodule TriplexTest do
   end
 
   test "create/2 must return a error if the tenant already exists", context do
+    prefix = Triplex.config().tenant_prefix
+
     if Enum.member?(context.repos, Triplex.PGTestRepo) do
       assert {:ok, _} = Triplex.create("lala", Triplex.PGTestRepo)
 
       assert {:error, message} =
                Triplex.create("lala", Triplex.PGTestRepo)
 
-      assert message =~ "ERROR 42P06 (duplicate_schema) schema \"lala\" already exists"
+      expected_error_msg =
+        "ERROR 42P06 (duplicate_schema) schema \"#{prefix}lala\" already exists"
+
+      assert message =~ expected_error_msg
     end
 
     if Enum.member?(context.repos, Triplex.MySQLTestRepo) do
@@ -51,8 +56,8 @@ defmodule TriplexTest do
       assert {:error, message} =
                Triplex.create("lala", Triplex.MySQLTestRepo)
 
-      assert message =~
-               "(1007) (ER_DB_CREATE_EXISTS) Can't create database 'lala'; database exists"
+      expected_error_msg = "(1007): Can't create database \'#{prefix}lala\'; database exists"
+      assert message =~ expected_error_msg
     end
   end
 
@@ -166,6 +171,20 @@ defmodule TriplexTest do
     end
   end
 
+  test "migrate/2 works when invoked with list of tenants from all/1" do
+    for repo <- repos() do
+      Triplex.create("lala", repo)
+      Triplex.create("lili", repo)
+      Triplex.create("lolo", repo)
+
+      result =
+        Triplex.all(repo)
+        |> Enum.map(fn t -> Triplex.migrate(t, repo) end)
+
+      assert result == [ok: [], ok: [], ok: []]
+    end
+  end
+
   test "to_prefix/2 must apply the given prefix to the tenant name" do
     assert Triplex.to_prefix("a", nil) == "a"
     assert Triplex.to_prefix(%{id: "a"}, nil) == "a"
@@ -207,22 +226,24 @@ defmodule TriplexTest do
     query =
       Note
       |> Ecto.Queryable.to_query()
-      |> Map.put(:prefix, @tenant)
+      |> Map.put(:prefix, Triplex.to_prefix(@tenant))
 
     repo.all(query)
   end
 
   defp force_migration_failure(repo, migration_function) do
+    prefix = Triplex.config().tenant_prefix
+
     sql =
       case repo.__adapter__() do
         Ecto.Adapters.MyXQL ->
           """
-          DELETE FROM #{@tenant}.schema_migrations
+          DELETE FROM #{prefix}#{@tenant}.schema_migrations
           """
 
         _ ->
           """
-          DELETE FROM "#{@tenant}"."schema_migrations"
+          DELETE FROM "#{prefix}#{@tenant}"."schema_migrations"
           """
       end
 
