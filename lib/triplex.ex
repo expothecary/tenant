@@ -303,14 +303,18 @@ defmodule Triplex do
       end
 
     %{rows: result} = SQL.query!(repo, sql, [], opts)
+    prefix = config().tenant_prefix
 
     result
     |> List.flatten()
-    |> Enum.filter(&(!reserved_tenant?(&1)))
+    |> Enum.filter(fn tenant_name ->
+      !reserved_tenant?(tenant_name) and
+        (prefix == nil or String.starts_with?(tenant_name, prefix))
+    end)
     |> Enum.map(fn tenant_name ->
-      case config().tenant_prefix do
+      case prefix do
         nil -> tenant_name
-        _ -> String.replace_prefix(tenant_name, config().tenant_prefix, "")
+        prefix -> String.replace_prefix(tenant_name, prefix, "")
       end
     end)
   end
