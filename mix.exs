@@ -18,7 +18,7 @@ defmodule Triplex.Mixfile do
       preferred_cli_env: preferred_cli_env(),
       deps: deps(),
       docs: docs(),
-      name: "Triplex",
+      name: "Triplex"
     ]
   end
 
@@ -40,7 +40,7 @@ defmodule Triplex.Mixfile do
       {:inch_ex, ">= 0.0.0", only: :docs, runtime: false},
       {:myxql, ">= 0.3.0", optional: true},
       {:plug, "~> 1.6", optional: true},
-      {:postgrex, ">= 0.15.0", optional: true},
+      {:postgrex, ">= 0.15.0", optional: true}
     ]
   end
 
@@ -53,7 +53,7 @@ defmodule Triplex.Mixfile do
   defp aliases do
     [
       "db.migrate": ["ecto.migrate", "triplex.migrate"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"],
+      test: ["test.reset", "ecto.migrate", "test"],
       "test.reset": ["ecto.drop", "ecto.create", "db.migrate"],
       "test.cover": &run_default_coverage/1,
       "test.cover.html": &run_html_coverage/1
