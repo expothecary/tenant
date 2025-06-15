@@ -36,3 +36,8 @@ tags
 
 # Idea config file.
 .idea
+
+# LS noise
+.elixirls
+.lexical
+
