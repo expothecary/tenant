@@ -32,15 +32,24 @@ defmodule Triplex.Mixfile do
 
   defp deps do
     [
-      {:credo, "~> 1.0", only: [:test, :dev], optional: true, runtime: false},
-      {:decimal, ">= 1.6.0"},
+      {:decimal, "~> 2.0"},
       {:ecto_sql, "~> 3.0"},
-      {:ex_doc, ">= 0.0.0", only: :docs, runtime: false},
-      {:excoveralls, "~> 0.0", only: :test},
-      {:inch_ex, ">= 0.0.0", only: :docs, runtime: false},
+
+      # optional dependencies
       {:myxql, ">= 0.3.0", optional: true},
       {:plug, "~> 1.6", optional: true},
-      {:postgrex, ">= 0.15.0", optional: true}
+      {:postgrex, ">= 0.15.0", optional: true},
+
+      # dev support
+      {:credo, "~> 1.0", only: [:test, :dev], optional: true, runtime: false},
+
+      # testing support
+      {:excoveralls, "~> 0.0", only: :test},
+      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
+
+      # docs support
+      {:ex_doc, ">= 0.0.0", only: :docs, runtime: false},
+      {:inch_ex, ">= 0.0.0", only: :docs, runtime: false}
     ]
   end
 
