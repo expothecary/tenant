@@ -3,13 +3,12 @@ import Config
 test_repos =
   (System.get_env("TRIPLEX_TEST_BACKENDS") || "pgsql,mysql")
   |> String.split(",")
-  |> Enum.reduce([], fn backend, acc ->
-        case backend do
-          "pgsql" -> [Triplex.PGTestRepo | acc]
-          "mysql" -> [Triplex.MySQLTestRepo | acc]
-        end
-      end
-    )
+  |> Enum.map(fn backend ->
+    case backend do
+      "pgsql" -> Triplex.PGTestRepo
+      "mysql" -> Triplex.MySQLTestRepo
+    end
+  end)
 
 # Configure triplex
 config :triplex,
@@ -26,7 +25,6 @@ config :triplex,
   ]
 
 config :triplex, tenant_table: :tenants
-
 
 # Configure your database
 config :triplex, ecto_repos: test_repos
