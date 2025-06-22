@@ -1,7 +1,7 @@
 defmodule Tenant.Mixfile do
   use Mix.Project
 
-  @source_url "https://github.com/exliir-apothecary/tenant"
+  @source_url "https://github.com/expothecary/tenant"
   @version "2.0.0"
 
   def project do
@@ -71,7 +71,7 @@ defmodule Tenant.Mixfile do
 
   defp package do
     [
-      name: :tenant3,
+      name: :tenant,
       description: "Build multitenant applications on top of Ecto.",
       files: ["lib", "mix.exs", "README*", "LICENSE*"],
       maintainers: ["Kelvin Stinghen"],
@@ -85,7 +85,6 @@ defmodule Tenant.Mixfile do
       extras: [
         "CHANGELOG.md": [title: "Changelog"],
         "CONTRIBUTING.md": [title: "Contributing"],
-        "CODE_OF_CONDUCT.md": [title: "Code of Conduct"],
         "LICENSE.md": [title: "License"],
         "README.md": [title: "Overview"]
       ],
