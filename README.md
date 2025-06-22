@@ -162,7 +162,8 @@ This lib is inspired by the gem [apartment](https://github.com/influitive/apartm
 
 ## Copyright and License
 
-Copyright (c) 2017 ateliware
+Copyright 2017 ateliware
+Copyright 2019 The Tenant AUTHORS
 
 This work is free. You can redistribute it and/or modify it under the
 terms of the MIT License. See the [LICENSE.md](./LICENSE.md) file for more details.
