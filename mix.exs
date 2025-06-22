@@ -1,12 +1,12 @@
-defmodule Triplex.Mixfile do
+defmodule Tenant.Mixfile do
   use Mix.Project
 
-  @source_url "https://github.com/ateliware/triplex"
-  @version "1.3.0"
+  @source_url "https://github.com/exliir-apothecary/tenant"
+  @version "2.0.0"
 
   def project do
     [
-      app: :triplex,
+      app: :tenant,
       version: @version,
       elixir: "~> 1.7",
       package: package(),
@@ -18,7 +18,7 @@ defmodule Triplex.Mixfile do
       preferred_cli_env: preferred_cli_env(),
       deps: deps(),
       docs: docs(),
-      name: "Triplex"
+      name: "Tenant"
     ]
   end
 
@@ -61,7 +61,7 @@ defmodule Triplex.Mixfile do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      "db.migrate": ["ecto.migrate", "triplex.migrate"],
+      "db.migrate": ["ecto.migrate", "tenant.migrate"],
       test: ["test.reset", "ecto.migrate", "test"],
       "test.reset": ["ecto.drop", "ecto.create", "db.migrate"],
       "test.cover": &run_default_coverage/1,
@@ -71,7 +71,7 @@ defmodule Triplex.Mixfile do
 
   defp package do
     [
-      name: :triplex,
+      name: :tenant3,
       description: "Build multitenant applications on top of Ecto.",
       files: ["lib", "mix.exs", "README*", "LICENSE*"],
       maintainers: ["Kelvin Stinghen"],

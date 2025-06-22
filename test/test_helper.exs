@@ -1,6 +1,6 @@
-defmodule Triplex.TestHelper do
+defmodule Tenant.TestHelper do
   def setup_repos(_) do
-    for repo <- Application.get_env(:triplex, :ecto_repos) do
+    for repo <- Application.get_env(:tenant, :ecto_repos) do
       repo.start_link()
       Ecto.Adapters.SQL.Sandbox.mode(repo, :auto)
     end
@@ -9,7 +9,7 @@ defmodule Triplex.TestHelper do
   end
 
   def repos() do
-    Application.get_env(:triplex, :ecto_repos)
+    Application.get_env(:tenant, :ecto_repos)
   end
 end
 

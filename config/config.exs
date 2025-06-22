@@ -9,18 +9,18 @@ import Config
 
 # You can configure for your application as:
 #
-#     config :triplex, key: :value
+#     config :tenant, key: :value
 #
 # And access this configuration in your application as:
 #
-#     Application.get_env(:triplex, :key)
+#     Application.get_env(:tenant, :key)
 #
 # Or configure a 3rd-party app:
 #
 #     config :logger, level: :info
 #
 
-config :triplex, ecto_repos: []
+config :tenant, ecto_repos: []
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment

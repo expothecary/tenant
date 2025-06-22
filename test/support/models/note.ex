@@ -1,11 +1,11 @@
-defmodule Triplex.Note do
+defmodule Tenant.Note do
   use Ecto.Schema
   import Ecto.Changeset
 
   schema "notes" do
     field(:body, :string)
-    belongs_to(:parent, Triplex.Note)
-    has_many(:children, Triplex.Note, foreign_key: :parent_id)
+    belongs_to(:parent, Tenant.Note)
+    has_many(:children, Tenant.Note, foreign_key: :parent_id)
   end
 
   def changeset(model, params \\ %{}) do

@@ -5,11 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### MyXQL Support
+## v2.0.0
 
-- I created a support for myxql package and mariaex package was removed,
-to use this update you will need to add the myxql package e.g `{:myxql, "~> 0.3.0"}`
-in your `mix.exs` file.
+### Renamed and development continued
+
+Due to no releases having been made in six years despite reaching out to the previous
+developers repeatedly over multiple years, Triplex was forked and renamed to Tenant.
+
+### Fixes
+
+- `Triplex.all` no longer returns tenants that do not match the configured rpefix (Aaron Seigo)
+- `Triplex.all` no longer returns prefixes (Andre Barr)
+- `mix triplex.migrations` fixed for Ecto 3 (Paul Ostazeski)
+
+### Improvements
+
+- Logging of SQL statements can be turned off with `config :tenant, log: false` (Thomas Cioppettini)
+- Use information schema as the default behaviour for MySQL driver (Hammam Samara)
+
+### Maintenance
+
+- De-duplicate the `timestamp/0` function (Aaron Seigo)
+- Support for myxql was added. Mariaex package was removed. Add the myxql package
+  e.g `{:myxql, "~> 0.7"}` in your `mix.exs` file.
+- Fix compiler warnings for Elixir >= 1.17 (Paul Ostazeski)
+
+### Testing
+
+- ` TENANT_TEST_BACKENDS` environment variable introduced which controls which backends
+  to run tests for. A comma separated list of database names is expected.
+  Defaults to `pgsql,mysql` (Aaron Seigo)
+
+### Documentation
+
+- Updated documentation (Kian-Meng Ang)
+
 
 ## v1.3.0 (2019-05-31)
 

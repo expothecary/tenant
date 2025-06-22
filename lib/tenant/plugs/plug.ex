@@ -1,0 +1,72 @@
+if Code.ensure_loaded?(Plug) do
+  defmodule Tenant.Plug do
+    @moduledoc """
+    This module have some basic functions for our tenant plugs.
+
+    The plugs we have for now are:
+
+    - `Tenant.ParamPlug` - loads the tenant from a body or query param
+    - `Tenant.SessionPlug` - loads the tenant from a session param
+    - `Tenant.SubdomainPlug` - loads the tenant from the url subdomain
+    - `Tenant.EnsurePlug` - ensures the current tenant is loaded and halts if not
+    """
+
+    alias Plug.Conn
+
+    @raw_tenant_assign :raw_current_tenant
+
+    @doc """
+    Puts the given `tenant` as an assign on the given `conn`, but only if the
+    tenant is not reserved.
+
+    The `config` map/struct must have:
+
+    - `tenant_handler`: function to handle the tenant param. Its return will
+    be used as the tenant.
+    - `assign`: the name of the assign where we must save the tenant.
+    """
+    def put_tenant(conn, tenant, config) do
+      if conn.assigns[config.assign] do
+        conn
+      else
+        conn = Conn.assign(conn, @raw_tenant_assign, tenant)
+        tenant = tenant_handler(tenant, config.tenant_handler)
+
+        if Tenant.reserved_tenant?(tenant) do
+          conn
+        else
+          Conn.assign(conn, config.assign, tenant)
+        end
+      end
+    end
+
+    @doc """
+    Ensure the tenant is loaded, and if not, halts the `conn`.
+
+    The `config` map/struct must have:
+
+    - `assign`: the name of the assign where we must save the tenant.
+    """
+    def ensure_tenant(conn, config) do
+      if loaded_tenant = conn.assigns[config.assign] do
+        callback(conn, loaded_tenant, config.callback)
+      else
+        conn
+        |> callback(conn.assigns[@raw_tenant_assign], config.failure_callback)
+        |> Conn.halt()
+      end
+    end
+
+    defp tenant_handler(tenant, nil),
+      do: tenant
+
+    defp tenant_handler(tenant, handler) when is_function(handler),
+      do: handler.(tenant)
+
+    defp callback(conn, _, nil),
+      do: conn
+
+    defp callback(conn, tenant, callback) when is_function(callback),
+      do: callback.(conn, tenant)
+  end
+end
