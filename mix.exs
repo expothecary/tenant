@@ -32,7 +32,7 @@ defmodule Tenant.Mixfile do
 
   defp deps do
     [
-      {:decimal, "~> 2.0"},
+      {:decimal, "~> 3.0"},
       {:ecto_sql, "~> 3.0"},
 
       # optional dependencies
