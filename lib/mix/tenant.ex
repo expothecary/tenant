@@ -16,8 +16,6 @@ defmodule Mix.Tenant do
 
   alias Ecto.Migrator
 
-  alias Logger.App
-
   alias Mix.Ecto
   alias Mix.Project
 
@@ -60,7 +58,7 @@ defmodule Mix.Tenant do
   @doc """
   Generates a nicely formatted timestamp
   """
-  def timestamp() do
+  def timestamp do
     {{y, m, d}, {hh, mm, ss}} = :calendar.universal_time()
     "#{y}#{pad(m)}#{pad(d)}#{pad(hh)}#{pad(mm)}#{pad(ss)}"
   end
@@ -141,21 +139,7 @@ defmodule Mix.Tenant do
   """
   @spec ensure_started(Ecto.Repo.t(), Keyword.t()) :: {:ok, pid | nil, [atom]}
   def ensure_started(repo, opts) do
-    {:ok, started} = Application.ensure_all_started(:ecto_sql)
-
-    # If we starting EctoSQL just now, assume
-    # logger has not been properly booted yet.
-    if :ecto_sql in started && Process.whereis(Logger) do
-      backends = Application.get_env(:logger, :backends, [])
-
-      try do
-        App.stop()
-        Application.put_env(:logger, :backends, [:console])
-        :ok = App.start()
-      after
-        Application.put_env(:logger, :backends, backends)
-      end
-    end
+    {:ok, _started} = Application.ensure_all_started(:ecto_sql)
 
     {:ok, apps} = repo.__adapter__().ensure_all_started(repo.config(), :temporary)
     pool_size = Keyword.get(opts, :pool_size, 2)
@@ -180,8 +164,17 @@ defmodule Mix.Tenant do
 
   def restart_apps_if_migrated(apps, [_ | _]) do
     # Silence the logger to avoid application down messages.
-    Logger.remove_backend(:console)
+    level = Logger.level()
+    Logger.configure(level: :none)
 
+    try do
+      restart_apps(apps)
+    after
+      Logger.configure(level: level)
+    end
+  end
+
+  defp restart_apps(apps) do
     for app <- Enum.reverse(apps) do
       Application.stop(app)
     end
@@ -191,8 +184,6 @@ defmodule Mix.Tenant do
     end
 
     :ok
-  after
-    Logger.add_backend(:console, flush: true)
   end
 
   defp pad(i), do: i |> to_string() |> String.pad_leading(2, "0")

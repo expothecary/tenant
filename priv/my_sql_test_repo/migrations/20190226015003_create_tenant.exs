@@ -1,4 +1,4 @@
-defmodule Elixir.Tenant.MSTestRepo.Migrations.CreateTenant do
+defmodule Tenant.MySQLTestRepo.Migrations.CreateTenant do
   use Ecto.Migration
 
   def change do

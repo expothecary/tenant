@@ -101,7 +101,6 @@ defmodule Mix.TenantTest do
 
   test "ensure_started" do
     Application.stop(:ecto_sql)
-    Logger.remove_backend(:console)
     refute :ecto_sql in Enum.map(Application.started_applications(), &elem(&1, 0))
 
     Process.put(:start_link, {:ok, self()})
