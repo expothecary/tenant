@@ -18,7 +18,7 @@ Tenant leverages database data segregation techniques (such as [Postgres schemas
    ```elixir
    def deps do
      [
-       {:tenant, "~> 2.0.0"},
+       {:tenant, "~> 2.0.1"},
      ]
    end
    ```
@@ -46,6 +46,8 @@ This command would run only the PostgreSQL tests:
 
     TENANT_TEST_BACKENDS="pgsql" mix test
 
+Both databases can be started locally with `docker compose up -d`.
+
 ### Additional configuration for MySQL
 
 In MySQL, each tenant will have its own MySQL database.
@@ -65,7 +67,7 @@ mix ecto.migrate
 Finally, configure Tenant to use the `tenants` table:
 
 ```elixir
-config :tenant, tenant_table: :"information_schema.schemata"
+config :tenant, tenant_table: :tenants
 ```
 
 Otherwise, Tenant will continue to use the `information_schema.schemata` table as the default behavior for storing tenants.
@@ -93,7 +95,7 @@ This will create a new database schema and run your migrations—which may take 
 Tenant.rename("your_tenant", "my_tenant")
 ```
 
-This is not something you should need to do often. :-)
+This is not something you should need to do often. :-) Renaming is only supported on PostgreSQL.
 
 
 #### Delete a tenant:
