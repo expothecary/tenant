@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.0.1
+
+### Maintenance
+
+- Accept `decimal` 3.x (`~> 2.0 or ~> 3.0`), allowing downstream apps to pick up the fix for
+  CVE-2026-32686 without an override (Serg Chernata)
+- Update locked dependencies to their latest releases (Serg Chernata)
+- Fix compiler and deprecation warnings for Elixir >= 1.18, verified up to Elixir 1.20 / OTP 29
+  (Serg Chernata)
+
+### Testing
+
+- Fix the MySQL test suite: migrations directory matches the repo name, and `rename/3` and
+  duplicate tenant expectations match MySQL behaviour (Serg Chernata)
+
 ## v2.0.0
 
 ### Renamed and development continued

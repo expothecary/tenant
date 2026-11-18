@@ -2,7 +2,7 @@ defmodule Tenant.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/expothecary/tenant"
-  @version "2.0.0"
+  @version "2.0.1"
 
   def project do
     [
@@ -15,7 +15,6 @@ defmodule Tenant.Mixfile do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: preferred_cli_env(),
       deps: deps(),
       docs: docs(),
       name: "Tenant"
@@ -32,7 +31,7 @@ defmodule Tenant.Mixfile do
 
   defp deps do
     [
-      {:decimal, "~> 2.0"},
+      {:decimal, "~> 2.0 or ~> 3.0"},
       {:ecto_sql, "~> 3.0"},
 
       # optional dependencies
@@ -95,16 +94,18 @@ defmodule Tenant.Mixfile do
     ]
   end
 
-  defp preferred_cli_env do
+  def cli do
     [
-      docs: :docs,
-      "hex.publish": :docs,
-      coveralls: :test,
-      "coveralls.travis": :test,
-      "coveralls.detail": :test,
-      "coveralls.post": :test,
-      "coveralls.html": :test,
-      "test.reset": :test
+      preferred_envs: [
+        docs: :docs,
+        "hex.publish": :docs,
+        coveralls: :test,
+        "coveralls.travis": :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test,
+        "test.reset": :test
+      ]
     ]
   end
 
