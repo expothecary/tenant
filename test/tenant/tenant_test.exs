@@ -56,7 +56,7 @@ defmodule TenantTest do
       assert {:error, message} =
                Tenant.create("lala", Tenant.MySQLTestRepo)
 
-      expected_error_msg = "(1007): Can't create database \'#{prefix}lala\'; database exists"
+      expected_error_msg = "Can't create database '#{prefix}lala'; database exists"
       assert message =~ expected_error_msg
     end
   end
@@ -94,12 +94,20 @@ defmodule TenantTest do
     end
   end
 
-  test "rename/3 must drop a existent tenant" do
-    for repo <- repos() do
-      Tenant.create("lala", repo)
-      Tenant.rename("lala", "lolo", repo)
-      refute Tenant.exists?("lala", repo)
-      assert Tenant.exists?("lolo", repo)
+  test "rename/3 must drop a existent tenant", context do
+    if Enum.member?(context.repos, Tenant.PGTestRepo) do
+      Tenant.create("lala", Tenant.PGTestRepo)
+      assert {:ok, "lolo"} = Tenant.rename("lala", "lolo", Tenant.PGTestRepo)
+      refute Tenant.exists?("lala", Tenant.PGTestRepo)
+      assert Tenant.exists?("lolo", Tenant.PGTestRepo)
+    end
+  end
+
+  test "rename/3 returns an error on MySQL", context do
+    if Enum.member?(context.repos, Tenant.MySQLTestRepo) do
+      Tenant.create("lala", Tenant.MySQLTestRepo)
+      assert {:error, _} = Tenant.rename("lala", "lolo", Tenant.MySQLTestRepo)
+      assert Tenant.exists?("lala", Tenant.MySQLTestRepo)
     end
   end
 
